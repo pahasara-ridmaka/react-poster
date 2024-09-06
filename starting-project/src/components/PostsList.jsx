@@ -1,42 +1,33 @@
 import Post from "./Post";
 import classes from "./PostsList.module.css";
-import NewPost from "./NewPost";
-import { useEffect, useState } from "react";
-import Modal from "./Modal";
+import { useEffect } from "react";
+import { useLoaderData } from "react-router-dom";
 
-export default function PostsList({ ModalVisibility, hideModalHandler }) {
-  const [posts, setPosts] = useState([]);
+export default function PostsList() {
+  const posts = useLoaderData();
 
-  useEffect(() => {
-    async function fetchPost() {
-      const response = await fetch("http://localhost:8080/posts");
-      const resData = await response.json();
-      setPosts(resData.posts);
-    }
+  //get data from the server
+  // useEffect(() => {
+  //   async function fetchPost() {
+  //     const response = await fetch("http://localhost:8080/posts");
+  //     const resData = await response.json();
+  //     setPosts(resData.posts);
+  //   }
 
-    fetchPost();
-  }, []);
+  //   fetchPost();
+  // }, []);
 
-  function addPostHandler(postData) {
-    fetch("http://localhost:8080/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    });
-
-    setPosts((existingPosts) => [postData, ...existingPosts]);
-  }
   return (
     <>
-      {ModalVisibility && (
-        <Modal onModalClick={hideModalHandler}>
-          <NewPost onCancel={hideModalHandler} onAddPost={addPostHandler} />
-        </Modal>
-      )}
       {posts.length > 0 && (
         <ul className={classes.posts}>
-          {posts.map((post, index) => (
-            <Post author={post.author} body={post.body} key={index} />
+          {posts.map((post) => (
+            <Post
+              id={post.id}
+              author={post.author}
+              body={post.body}
+              key={post.id}
+            />
           ))}
         </ul>
       )}
